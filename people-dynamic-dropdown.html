@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dynamic People Dropdown</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 2rem;
+      }
+
+      .field {
+        margin-bottom: 1rem;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 0.25rem;
+        font-weight: 600;
+      }
+
+      select {
+        min-width: 260px;
+        padding: 0.4rem;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Dynamic People Dropdown</h1>
+
+    <div class="field">
+      <label for="teamSelect">Select a team</label>
+      <select id="teamSelect">
+        <option value="">-- Choose a team --</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="personSelect">Select a person</label>
+      <select id="personSelect" disabled>
+        <option value="">-- Choose a person --</option>
+      </select>
+    </div>
+
+    <p id="selectionText">No person selected.</p>
+
+    <script>
+      // Team -> people source data (can come from an API in real apps)
+      const peopleByTeam = {
+        engineering: ["Ada Lovelace", "Alan Turing", "Grace Hopper"],
+        design: ["Dieter Rams", "Susan Kare", "Paula Scher"],
+        product: ["Marty Cagan", "Ken Norton", "Teresa Torres"],
+      };
+
+      const teamSelect = document.getElementById("teamSelect");
+      const personSelect = document.getElementById("personSelect");
+      const selectionText = document.getElementById("selectionText");
+
+      function fillTeamOptions() {
+        Object.keys(peopleByTeam).forEach((team) => {
+          const option = document.createElement("option");
+          option.value = team;
+          option.textContent = team[0].toUpperCase() + team.slice(1);
+          teamSelect.appendChild(option);
+        });
+      }
+
+      function fillPeopleOptions(team) {
+        personSelect.innerHTML = "<option value=''>-- Choose a person --</option>";
+
+        if (!team || !peopleByTeam[team]) {
+          personSelect.disabled = true;
+          selectionText.textContent = "No person selected.";
+          return;
+        }
+
+        peopleByTeam[team].forEach((person) => {
+          const option = document.createElement("option");
+          option.value = person;
+          option.textContent = person;
+          personSelect.appendChild(option);
+        });
+
+        personSelect.disabled = false;
+      }
+
+      teamSelect.addEventListener("change", (event) => {
+        fillPeopleOptions(event.target.value);
+      });
+
+      personSelect.addEventListener("change", (event) => {
+        selectionText.textContent = event.target.value
+          ? `Selected: ${event.target.value}`
+          : "No person selected.";
+      });
+
+      fillTeamOptions();
+    </script>
+  </body>
+</html>
